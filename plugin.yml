@@ -1,0 +1,8 @@
+name: SnowSpleef
+version: 1.0.1
+author: XandarHD
+main: de.xandarhd.horstblocks.de.event.snowspleef.SnowSpleef
+api-version: 1.13
+commands:
+   snowspleef:
+    description:
