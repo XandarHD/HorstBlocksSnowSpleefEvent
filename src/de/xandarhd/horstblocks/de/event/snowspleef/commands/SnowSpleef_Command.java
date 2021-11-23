@@ -30,9 +30,12 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 						|| player.isOp()){
 					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef start" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Startet das Event");
 					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef stop" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Stopt das Event");
+					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef pvp" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Schlatet das PVP an/aus");
 					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef region" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Zeigt dir die Positionen der Arena an");
 					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef region set" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Erhaltest einen Makierstick");
+					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef spectator" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Zeigt dir die Positionen des Spectators an");
 					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef spectator set" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Setzt den Zuschauerspawn");
+					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef spawn" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Zeigt dir die Positionen des Spawnes an");
 					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef spawn set" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Setzt den Spawn");
 					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef reset platform" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Setzt die Platform zurück");
 					player.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "/snowspleef reset players" + ChatColor.GREEN + "->" + ChatColor.GRAY + "Setzt alle Spieler zurück");
@@ -56,6 +59,19 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 								+ SnowSpleef.spleef.lm.getLocation("pos2").getBlockZ());
 					}
 				}
+				if(args[0].equalsIgnoreCase("pvp")){
+					if(player.hasPermission("snowspleef.region") 
+							|| player.hasPermission("snowspleef.admin") 
+							|| player.isOp()){
+						if(SnowSpleef.pvpallowdney){
+							player.sendMessage(SnowSpleef.prefix + ChatColor.RED + "PVP ist nun augeschaltet!");
+							SnowSpleef.pvpallowdney = false;
+						}else{
+							player.sendMessage(SnowSpleef.prefix + ChatColor.GREEN + "PVP ist nun angeschaltet!");
+							SnowSpleef.pvpallowdney = true;
+						}
+					}
+				}
 				if(args[0].equalsIgnoreCase("start")){
 					if(player.hasPermission("snowspleef.start") 
 							|| player.hasPermission("snowspleef.admin") 
@@ -71,7 +87,6 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 								if(!players.hasPermission("snowspleef.bypass") 
 										|| !players.hasPermission("snowspleef.eventteam") 
 										|| !players.isOp()){
-								if(SnowSpleef.spleef.AlivePlayers.size() >0){
 									SnowSpleef.spleef.AlivePlayers.add(players.getName());
 									players.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "Das Event startet in 30 Sekunden!");
 									players.sendMessage(SnowSpleef.prefix + ChatColor.GOLD + "Bereitet euch vor und verteilt euch!");
@@ -83,7 +98,8 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 									itemStack.setItemMeta(itemMeta);
 									players.getInventory().setItemInMainHand(itemStack);
 									players.teleport( SnowSpleef.spleef.lm.getLocation("spawn"));
-								}
+									players.setHealth(20);
+									players.setFoodLevel(20);
 									
 								}
 							}
@@ -118,12 +134,16 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 							|| player.hasPermission("snowspleef.admin") 
 							|| player.isOp()){
 						if(SnowSpleef.start){
+							Bukkit.getScheduler().cancelTask(Countdown.taskID);
 							SnowSpleef.start = false;
-							Bukkit.getScheduler().cancelTask(SnowSpleef_Command.taskID);
+							SnowSpleef.beakallowdney = false;
+							SnowSpleef.pvpallowdney = false;
 							SnowSpleef.spleef.AlivePlayers.clear();
 							SnowSpleef.spleef.Platz1.clear();
 							SnowSpleef.spleef.Platz2.clear();
 							SnowSpleef.spleef.Platz3.clear();
+							SnowSpleef.spleef.LaunchSnowball.clear();
+							SnowSpleef.spleef.ShootSnowball.clear();
 							for(Player players : Bukkit.getOnlinePlayers()){
 								players.sendMessage(SnowSpleef.prefix + "Das Event wurde beendet!");
 								Utils.ClearPlayer(players);
@@ -217,7 +237,7 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 								|| player.isOp()){
 							SnowSpleef.beakallowdney = true;
 							//player.sendMessage(SnowSpleef.prefix + "Das abbauen wurde freigegeben!");
-							Bukkit.broadcastMessage(SnowSpleef.prefix + ChatColor.RED + "Das abbauen von Schneeblöcken wurde aktiviert!");
+							Bukkit.broadcastMessage(SnowSpleef.prefix + ChatColor.GREEN + "Das abbauen von Schneeblöcken wurde aktiviert!");
 						}
 					}
 					if(args[1].equalsIgnoreCase("deny")){
