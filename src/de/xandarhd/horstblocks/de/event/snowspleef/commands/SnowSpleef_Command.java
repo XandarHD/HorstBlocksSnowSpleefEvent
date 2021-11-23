@@ -220,7 +220,7 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 										ItemStack itemStack = new ItemStack(Material.IRON_SHOVEL);
 										ItemMeta itemMeta = itemStack.getItemMeta();
 										itemMeta.setUnbreakable(true);
-										itemMeta.setDisplayName("SchneeSchaufel");
+										itemMeta.setDisplayName(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "SchneeSchaufel");
 										itemStack.setItemMeta(itemMeta);
 										players.getInventory().setItemInMainHand(itemStack);
 									}
